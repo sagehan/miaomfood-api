@@ -6,6 +6,7 @@
    [com.miaomfood.api.service.qpi :as q]
    ;; [datomic.api :as d]
    [cognitect.transit :as t]
+   [clojure.data.json :as json]
    [io.pedestal.http :as http]
    [io.pedestal.http.route :as route]
    [io.pedestal.interceptor :refer [interceptor]]
@@ -16,8 +17,8 @@
 
 (def json-packaged
   (atom #(let [out (ByteArrayOutputStream. 4096)]
-           (t/write (t/writer out :json-verbose) %)
-           (.toString out "UTF-8"))))
+           (t/write (t/writer out :json) %)
+           (.toString out))))
 
 (def supported-types
   ["text/plain"
@@ -31,6 +32,7 @@
     "text/html"        body
     "text/plain"       body
     "application/edn"  (pr-str body)
+    "application/json" (json/write-str body)
     "application/transit+json" (@json-packaged body)))
 
 (defn coerce-to

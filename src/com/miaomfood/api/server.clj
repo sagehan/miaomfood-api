@@ -16,8 +16,10 @@
    ::http/port (Integer/parseInt (or (env :port) "8080"))
    ::http/type :jetty
    ::http/join? false
-   ::http/resource-path "/public"
-   ::http/allowed-origins ["http://miaomfood.com:80", "http://miaomfood.com:8000"]
+   ::http/allowed-origins
+   ["http://localhost:8080",
+    "http://localhost:8088",
+    "https://miaomfood.com"]
    ::http/routes (fn []
                    (doseq [ns-sym (modified-namespaces)]
                      (require ns-sym :reload))
