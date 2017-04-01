@@ -4,16 +4,22 @@
           :dependencies   '[[org.clojure/clojure "1.8.0"]
                             [io.pedestal/pedestal.service "0.5.2"]
                             [io.pedestal/pedestal.jetty "0.5.2"]
+                            [com.cognitect/transit-clj "0.8.300"]
+                            ;; [com.taoensso/nippy "2.13.0"]
 
                             [ns-tracker "0.3.1"]
                             [environ "1.1.0"]
 
                             ;; Datomic, if your heart desires it
-                            [com.datomic/datomic-pro "0.9.5561" :exclusions [joda-time
-                                                                              org.slf4j/slf4j-nop
-                                                                              org.slf4j/slf4j-log4j12]]
-                            [io.rkn/conformity "0.4.0" :exclusions [com.datomic/datomic-free]]
+                            [com.datomic/datomic-pro "0.9.5561"
+                             :exclusions [joda-time
+                                          org.slf4j/slf4j-nop
+                                          org.slf4j/slf4j-log4j12]]
+                            [io.rkn/conformity "0.4.0"
+                             :exclusions [com.datomic/datomic-free]]
+                            [org.postgresql/postgresql "9.3-1102-jdbc41"]
 
+                            [org.clojure/algo.generic  "0.1.2"]
                             ;; Logging
                             [ch.qos.logback/logback-classic "1.1.2"
                              :exclusions [org.slf4j/slf4j-api]]

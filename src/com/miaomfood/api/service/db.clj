@@ -17,7 +17,7 @@
       (let [norms (c/read-resource rsc)]
         (c/ensure-conforms conn norms)))))
 
- (def insert-datomic
+(def db-interceptor
    "Provide a Datomic conn and db in all incoming requests"
    (interceptor
      {:name ::insert-datomic
