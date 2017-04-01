@@ -2,114 +2,590 @@
  {:txes
   [[
     {:db/id #db/id[:db.part/user -1]
-     :website/title "喵姆餐厅 • 乌鲁木齐全城外送"}
-    {:db/id #db/id[:db.part/user -15]
-     :website/notices [{:db/id #db/id[:db.part/user -16]
+     :website/title "喵姆餐厅 • 好多好多的芝士和肉，给你认真生活的力量！"}
+    {:db/id #db/id[:db.part/user -2]
+     :website/notices [{:db/id #db/id[:db.part/user -3]
                         :notice/content "营业中，欢迎点餐！"
                         :notice/duration 10}
-                       {:db/id #db/id[:db.part/user -17]
+                       {:db/id #db/id[:db.part/user -4]
                         :notice/content "即刻下单，立刻制餐！"
                         :notice/duration 3}]}
-    {:db/id #db/id[:db.part/user -2]
-     :group/menus [#db/id[:db.part/user -3 ]
-                   #db/id[:db.part/user -19]]}
-    {:db/id #db/id[:db.part/user -3]
-     :menu/name "好吃的"
-     :menu/categories [#db/id[:db.part/user -5]
-                       #db/id[:db.part/user -6]
-                       #db/id[:db.part/user -7]]}
     {:db/id #db/id[:db.part/user -5]
-     :category/name "披萨"
-     :category/cuisines [#db/id[:db.part/user -8]
-                         #db/id[:db.part/user -9]]}
-    {:db/id #db/id[:db.part/user -6]
-     :category/name "焗饭"}
-    {:db/id #db/id[:db.part/user -7]
-     :category/name "沙拉"
-     :category/cuisines [#db/id[:db.part/user -14]]}
-    {:db/id #db/id[:db.part/user -8]
-     :cuisine/name "激情培根"
-     :cuisine/id "JQPG"
-     :cuisine/depict "Bacon.JPG"
-     :cuisine/species [{:db/id #db/id[:db.part/user -10]
-                        :spec/name :spec.name/八寸
-                        :currency/Abbr :currency.Abbr/CNY
-                        :spec/price 39
-                        :spec/duplexable true
-                        :spec/inventory 100}
-                       {:db/id #db/id[:db.part/user -11]
-                        :spec/name :spec.name/十寸
-                        :currency/Abbr :currency.Abbr/CNY
-                        :spec/price 59
-                        :spec/duplexable true
-                        :spec/inventory 100}
-                       ]}
-    {:db/id #db/id[:db.part/user -9]
-     :cuisine/name "风情夏威夷"
-     :cuisine/id "FQXWY"
-     :cuisine/depict "Hawaii.JPG"
-     :cuisine/species [{:db/id #db/id[:db.part/user -12]
-                        :spec/name :spec.name/八寸
-                        :currency/Abbr :currency.Abbr/CNY
-                        :spec/price 39
-                        :spec/duplexable true
-                        :spec/inventory 100}
-                       {:db/id #db/id[:db.part/user -13]
-                        :spec/name :spec.name/十寸
-                        :currency/Abbr :currency.Abbr/CNY
-                        :spec/price 59
-                        :spec/duplexable true
-                        :spec/inventory 100}
-                       ]}
-    {:db/id  #db/id[:db.part/user -14]
-     :cuisine/name "水果沙拉"
-     :cuisine/id "SGSL"
-     :cuisine/depict "Salad.jpg"
-     :cuisine/species [{:db/id #db/id[:db.part/user]
-                        :spec/name :spec.name/份
-                        :spec/price 25
-                        :spec/duplexable true
-                        :spec/inventory 100}]}
-    {:db/id #db/id[:db.part/user -15]
-     :customer/id #uuid "56e658a4-9686-45cd-a746-5d983306aff4"
-     :customer/phone "1234567890"
-     :customer/email "testuser@testuser.com"
-     :customer/qq "123456789"
-     :customer/likes [{:db/id #db/id[:db.part/user -9]}
-                      {:db/id #db/id[:db.part/user -14]}]}
-    {:db/id #db/id[:db.part/user -18]
      :restaurant/name "喵姆餐厅"
      :restaurant/phone "18690890381"
      :restaurant/wechatID "miaomfood"
      :restaurant/address "乌鲁木齐市高新区桂林路锦林二巷8号"
      :restaurant/rest-day :rest-day/周一
      :restaurant/isClosed false
-     :db/doc "美味披萨,焗饭,还有各种小吃,乌鲁木齐全城外送!"}
-    {:db/id #db/id[:db.part/user -19]
+     :restaurant/slogan "好多好多的芝士和肉，给你认真生活的力量！"}
+    {:db/id #db/id[:db.part/user -6]
+     :customer/id #uuid "56e658a4-9686-45cd-a746-5d983306aff4"
+     :customer/phone "1234567890"
+     :customer/email "testuser@testuser.com"
+     :customer/qq "123456789"
+     :customer/likes [{:db/id #db/id[:db.part/user -31]}
+                      {:db/id #db/id[:db.part/user -32]}
+                      ]}
+    {:db/id #db/id[:db.part/user -10]
+     :group/menus [#db/id[:db.part/user -11]
+                   #db/id[:db.part/user -12]
+                   ]}
+    {:db/id #db/id[:db.part/user -11]
+     :menu/name "好吃的"
+     :menu/categories [#db/id[:db.part/user -16]
+                       #db/id[:db.part/user -17]
+                       #db/id[:db.part/user -18]
+                       ]}
+    {:db/id #db/id[:db.part/user -12]
      :menu/name "好喝的"
-     :menu/categories [#db/id[:db.part/user -20]]}
+     :menu/categories [#db/id[:db.part/user -20]
+                       #db/id[:db.part/user -21]
+                       #db/id[:db.part/user -22]
+                       ]}
+    {:db/id #db/id[:db.part/user -16]
+     :category/name "披萨"
+     :category/cuisines [#db/id[:db.part/user -31]
+                         #db/id[:db.part/user -32]
+                         #db/id[:db.part/user -33]
+                         #db/id[:db.part/user -34]
+                         #db/id[:db.part/user -35]
+                         #db/id[:db.part/user -36]
+                         #db/id[:db.part/user -37]
+                         #db/id[:db.part/user -38]
+                         #db/id[:db.part/user -39]
+                         #db/id[:db.part/user -40]
+                         ]}
+    {:db/id #db/id[:db.part/user -17]
+     :category/name "焗饭"
+     :category/cuisines [#db/id[:db.part/user -41]
+                         #db/id[:db.part/user -42]
+                         #db/id[:db.part/user -43]
+                         #db/id[:db.part/user -44]
+                         ]}
+    {:db/id #db/id[:db.part/user -18]
+     :category/name "小吃"
+     :category/cuisines [#db/id[:db.part/user -51]
+                         #db/id[:db.part/user -52]
+                         #db/id[:db.part/user -53]
+                         #db/id[:db.part/user -54]
+                         #db/id[:db.part/user -55]
+                         #db/id[:db.part/user -56]
+                         #db/id[:db.part/user -57]
+                         #db/id[:db.part/user -58]
+                         #db/id[:db.part/user -59]
+                         #db/id[:db.part/user -60]
+                         ]}
     {:db/id #db/id[:db.part/user -20]
      :category/name "咖啡"
-     :category/cuisines [#db/id[:db.part/user -21]
-                         #db/id[:db.part/user -22]]}
+     :category/cuisines [#db/id[:db.part/user -61]
+                         #db/id[:db.part/user -62]
+                         #db/id[:db.part/user -63]
+                         #db/id[:db.part/user -64]
+                         ]}
     {:db/id #db/id[:db.part/user -21]
-     :cuisine/name "巧克力摩卡"
-     :cuisine/id "QKLMK"
+     :category/name "茶类"
+     :category/cuisines [#db/id[:db.part/user -71]
+                         #db/id[:db.part/user -72]
+                         #db/id[:db.part/user -73]
+                         #db/id[:db.part/user -74]
+                         ]}
+    {:db/id #db/id[:db.part/user -22]
+     :category/name "气泡水"
+     :category/cuisines [#db/id[:db.part/user -81]
+                         #db/id[:db.part/user -82]
+                         #db/id[:db.part/user -83]
+                         ]}
+    {:db/id #db/id[:db.part/user -31]
+     :cuisine/name "激情培根"
+     :cuisine/id "JQPG"
      :cuisine/depict "Bacon.JPG"
-     :cuisine/species [{:db/id #db/id[:db.part/user -23]
-                        :spec/name :spec.name/杯
-                        :currency/Abbr :currency.Abbr/CNY
+     :cuisine/species [{:db/id #db/id[:db.part/user -311]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 39
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -312]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 59
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -32]
+     :cuisine/name "风情夏威夷"
+     :cuisine/id "FQXWY"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -321]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 39
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -322]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 59
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id  #db/id[:db.part/user -33]
+     :cuisine/name "蘑菇菠菜"
+     :cuisine/id "MGBC"
+     :cuisine/depict "Salad.jpg"
+     :cuisine/species [{:db/id #db/id[:db.part/user -331]
+                        :spec/name :spec.name/八寸
+                        :spec/price 35
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -332]
+                        :spec/name :spec.name/十寸
+                        :spec/price 53
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -34]
+     :cuisine/name "席卷天虾"
+     :cuisine/id "XJTX"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -341]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 58
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -342]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 87
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -35]
+     :cuisine/name "内牛满面"
+     :cuisine/id "NNMM"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -351]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 49
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -352]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 74
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -36]
+     :cuisine/name "情满金枪鱼"
+     :cuisine/id "QMJQY"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -361]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 58
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -362]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 87
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -37]
+     :cuisine/name "意式肉酱披萨"
+     :cuisine/id "ITALY"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -371]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 58
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -372]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 87
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -38]
+     :cuisine/name "奥尔良烤鸡肉"
+     :cuisine/id "ORLEANS"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -381]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 46
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -382]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 69
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -39]
+     :cuisine/name "榴恋榴莲"
+     :cuisine/id "LLLL"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -391]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 68
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -392]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 97
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -40]
+     :cuisine/name "土耳其烤鸡肉"
+     :cuisine/id "TURKEY"
+     :cuisine/depict "Hawaii.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -401]
+                        :spec/name :spec.name/八寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 46
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -402]
+                        :spec/name :spec.name/十寸
+                        :currency/Abbr :currency/CNY
+                        :spec/price 69
+                        :spec/duplexable true
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -41]
+     :cuisine/name "红烩牛肉焗饭"
+     :cuisine/id "HHNRJF"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -411]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 35
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -42]
+     :cuisine/name "咖喱鸡肉焗饭"
+     :cuisine/id "GLJRJF"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -421]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 35
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -43]
+     :cuisine/name "意式肉酱焗饭"
+     :cuisine/id "ITALYJF"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -431]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 42
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -44]
+     :cuisine/name "土耳其烤鸡肉焗饭"
+     :cuisine/id "TURKEYJF"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -441]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 38
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -51]
+     :cuisine/name "土豆肉酱千层"
+     :cuisine/id "TUDOUROU"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -511]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 42
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -52]
+     :cuisine/name "芝士焗土豆泥"
+     :cuisine/id "TUDOUNI"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -521]
+                        :spec/name :spec.name/培根
+                        :currency/Abbr :currency/CNY
+                        :spec/price 9
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -522]
+                        :spec/name :spec.name/海鲜
+                        :currency/Abbr :currency/CNY
+                        :spec/price 12
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -53]
+     :cuisine/name "芝士焗榴莲"
+     :cuisine/id "JULIULIAN"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -531]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
                         :spec/price 28
                         :spec/inventory 100}
                        ]}
-    {:db/id #db/id[:db.part/user -22]
-     :cuisine/name "法国芝士咖啡"
-     :cuisine/id "FGZSKF"
+    {:db/id #db/id[:db.part/user -54]
+     :cuisine/name "鸡肉洋葱圈"
+     :cuisine/id "JRYCJ"
      :cuisine/depict "Bacon.JPG"
-     :cuisine/species [{:db/id #db/id[:db.part/user -24]
+     :cuisine/species [{:db/id #db/id[:db.part/user -541]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -55]
+     :cuisine/name "奥尔良烤翅"
+     :cuisine/id "ORLEANSKCH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -551]
+                        :spec/name :spec.name/两对
+                        :currency/Abbr :currency/CNY
+                        :spec/price 20
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -552]
+                        :spec/name :spec.name/六对
+                        :currency/Abbr :currency/CNY
+                        :spec/price 50
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -56]
+     :cuisine/name "芝心虾球"
+     :cuisine/id "ZHXXQ"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -561]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 29
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -57]
+     :cuisine/name "炸鸡翅"
+     :cuisine/id "ZHJC"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -571]
+                        :spec/name :spec.name/两对
+                        :currency/Abbr :currency/CNY
+                        :spec/price 20
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -572]
+                        :spec/name :spec.name/六对
+                        :currency/Abbr :currency/CNY
+                        :spec/price 50
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -58]
+     :cuisine/name "炸鸡米花"
+     :cuisine/id "ZHJMH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -581]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -59]
+     :cuisine/name "炸鸡柳"
+     :cuisine/id "ZHJL"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -591]
+                        :spec/name :spec.name/份
+                        :currency/Abbr :currency/CNY
+                        :spec/price 18
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -60]
+     :cuisine/name "炸食套餐"
+     :cuisine/id "ZHSHTC"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -601]
+                        :spec/name :spec.name/套
+                        :currency/Abbr :currency/CNY
+                        :spec/price 89
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -61]
+     :cuisine/name "巧克力摩卡"
+     :cuisine/id "QKLMK"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -611]
                         :spec/name :spec.name/杯
-                        :currency/Abbr :currency.Abbr/CNY
+                        :currency/Abbr :currency/CNY
                         :spec/price 25
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -62]
+     :cuisine/name "卡布奇诺"
+     :cuisine/id "KBQN"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -621]
+                        :spec/name :spec.name/杯
+                        :currency/Abbr :currency/CNY
+                        :spec/price 25
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -63]
+     :cuisine/name "咖啡拿铁"
+     :cuisine/id "KFNT"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -631]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 25
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -632]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 25
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -64]
+     :cuisine/name "美式咖啡"
+     :cuisine/id "MSHKF"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -641]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 18
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -642]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 18
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -71]
+     :cuisine/name "花香奶茶"
+     :cuisine/id "HXNCH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -711]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 15
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -712]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 15
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -72]
+     :cuisine/name "珍珠奶茶"
+     :cuisine/id "ZHZHNCH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -721]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 16
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -722]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 16
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -73]
+     :cuisine/name "鸳鸯奶茶"
+     :cuisine/id "YYNCH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -731]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 17
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -732]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 17
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -74]
+     :cuisine/name "菠萝伯爵茶"
+     :cuisine/id "BLBJCH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -741]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -742]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -75]
+     :cuisine/name "花香柠檬茶"
+     :cuisine/id "HXNMCH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -751]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -752]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -76]
+     :cuisine/name "金桔柚子茶"
+     :cuisine/id "JJYZCHA"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -761]
+                        :spec/name :spec.name/热
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       {:db/id #db/id[:db.part/user -762]
+                        :spec/name :spec.name/冰
+                        :currency/Abbr :currency/CNY
+                        :spec/price 22
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -81]
+     :cuisine/name "青柠气泡水"
+     :cuisine/id "QNQPSH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -811]
+                        :spec/name :spec.name/杯
+                        :currency/Abbr :currency/CNY
+                        :spec/price 18
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -82]
+     :cuisine/name "荔枝芦荟气泡水"
+     :cuisine/id "LZHLHSH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -821]
+                        :spec/name :spec.name/杯
+                        :currency/Abbr :currency/CNY
+                        :spec/price 18
+                        :spec/inventory 100}
+                       ]}
+    {:db/id #db/id[:db.part/user -83]
+     :cuisine/name "清香玫瑰气泡水"
+     :cuisine/id "QXMGQPSH"
+     :cuisine/depict "Bacon.JPG"
+     :cuisine/species [{:db/id #db/id[:db.part/user -831]
+                        :spec/name :spec.name/杯
+                        :currency/Abbr :currency/CNY
+                        :spec/price 18
                         :spec/inventory 100}
                        ]}
     ]]}}

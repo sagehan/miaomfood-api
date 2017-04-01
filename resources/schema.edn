@@ -93,6 +93,13 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
+     :db/ident :restaurant/slogan
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "餐厅口号"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
      :db/ident :restaurant/phone
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
@@ -227,12 +234,16 @@
     ;; Enums
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/八寸]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/十寸]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/买五赠一]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/培根]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/海鲜]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/份]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/对]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/套]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/两对]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/六对]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/杯]
-
-    [:db/add #db/id[:db.part/user] :db/ident :currency.Abbr/CNY]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/热]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/冰]
+    [:db/add #db/id[:db.part/user] :db/ident :currency/CNY]
 
 ;;; customer
     {:db/id #db/id[:db.part/db]
