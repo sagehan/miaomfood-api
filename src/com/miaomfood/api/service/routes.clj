@@ -104,7 +104,7 @@
                      (:transit-params req))
             dbid    (d/tempid :db.part/user)
             slug    (str (d/squuid)) ; just for demo
-            url     "https://miaomfood.com"
+            url     (route/url-for :view-order :params {:order-id slug})
             datoms  (-> transit
                         (assoc :db/id dbid)
                         (assoc :order/tokenSlug slug)
