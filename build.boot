@@ -5,7 +5,6 @@
                             [io.pedestal/pedestal.service "0.5.2"]
                             [io.pedestal/pedestal.jetty "0.5.2"]
                             [org.clojure/data.json       "0.2.6"]
-                            [com.cognitect/transit-clj "0.8.300"]
                             ;; [com.taoensso/nippy "2.13.0"]
 
                             [ns-tracker "0.3.1"]
