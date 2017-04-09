@@ -198,7 +198,7 @@
      :db/ident :currency/Abbr
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "币种，枚举型，'人民币'等等"
+     :db/doc "币种，枚举型，'CNY'等等"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
@@ -398,28 +398,28 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/customerName
+     :db/ident :order/customer-name
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "顾客姓名"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/streetAddress
+     :db/ident :order/street-addr
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "配送地址"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/customerPhone
+     :db/ident :order/customer-phone
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "配送联系方式"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/cuisineItems
+     :db/ident :order/items
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/many
      :db/isComponent true
@@ -427,21 +427,21 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisineItem/ID
+     :db/ident :orderItem/cid
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品ID"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisineItem/spec
+     :db/ident :orderItem/spec
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品规格"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisineItem/qty
+     :db/ident :orderItem/qty
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品订购数量"
@@ -481,22 +481,22 @@
      :db/ident :order/payment
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/isComponent true
+     ;;:db/isComponent true
      :db/doc "支付方式"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
      :db/ident :order/schedule-day
-     :db/valueType :db.type/ref
+     :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
-     :db/doc "预订日期，枚举，'今日'，'明日'"
+     :db/doc "预订日期，0表示当日，1表示次日，以此类推'"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
      :db/ident :order/schedule-time
-     :db/valueType :db.type/long
+     :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
-     :db/doc "预订时间，单位秒数"
+     :db/doc "预订时间，字符串"
      :db.install/_attribute :db.part/db}
 
     ;; coupon
@@ -578,7 +578,7 @@
     [:db/add #db/id[:db.part/user] :db/ident :order.schedule-day/明日]
 
     [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/直减]
-    [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/打折]
+    [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/折扣]
 
     [:db/add #db/id[:db.part/user] :db/ident :payment.receiver/到付]
     [:db/add #db/id[:db.part/user] :db/ident :payment.receiver/微信支付]

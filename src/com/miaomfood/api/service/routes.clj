@@ -2,19 +2,24 @@
   "Main restful api logic for miaomfood.com"
   (:require
    [ring.util.response :as ring-resp]
-   [com.miaomfood.api.service.db :as db]
+   [com.miaomfood.api.service.db :as db :refer [datomic-intc]]
    [com.miaomfood.api.service.qpi :as q]
-   ;; [datomic.api :as d]
+   [datomic.api :as d]
+   [clojure.walk :as walk]
    [cognitect.transit :as t]
    [clojure.data.json :as json]
-   [io.pedestal.http :as http]
+   [io.pedestal.http :as http :refer [html-body]]
    [io.pedestal.http.route :as route]
    [io.pedestal.interceptor :refer [interceptor]]
-   [io.pedestal.http.body-params :as body-params]
+   [io.pedestal.interceptor.helpers :refer [defhandler]]
+   [io.pedestal.http.body-params :refer [body-params]]
    [io.pedestal.http.content-negotiation :as conneg])
   (:import
    [java.io ByteArrayInputStream ByteArrayOutputStream]))
 
+;;
+;; Helpler Functions & Interceptors
+;;
 (def json-packaged
   (atom #(let [out (ByteArrayOutputStream. 4096)]
            (t/write (t/writer out :json) %)
@@ -52,23 +57,72 @@
           (nil? (get-in ctx [:response :body :headers "Content-Type"]))
           (update-in [:response] coerce-to accepted-type))))}))
 
-(def common-interceptors
-  [(body-params/body-params)
-   http/html-body])
-
-(def api-interceptors
+(def content-neg-intc (conneg/negotiate-content supported-types))
+(def common-intc
   [coerce-body
-   db/db-interceptor
-   (body-params/body-params)
-   (conneg/negotiate-content supported-types)])
+   (body-params)
+   content-neg-intc])
 
-(defn greeting [req] (ring-resp/response "Welcome to miaomfood!"))
+;;
+;; API special Interceptors & Handlers
+;;
+;; defhandler and its macro brothers will break AOT, will be removed on next commit
+;; see https://github.com/pedestal/pedestal/issues/308
+(defhandler greeting [req] (ring-resp/response "Welcome to miaomfood!"))
 
-(defn fetch-cuisines
-  [req]
-  (ring-resp/response (q/cuisines-entities (:conn req))))
+(def get-cuisines
+  (interceptor
+   {:name ::list-cuisines
+    :enter
+    (fn [{{:keys [conn]} :request :as ctx}]
+      (assoc ctx :response (ring-resp/response (q/cuisines-entities conn))))}))
+
+(def view-order
+  (interceptor
+   {:name ::view-order
+    :leave
+    (fn [{{db :db :as req} :request :as ctx}]
+      (if-let [oid (get-in req [:path-params :order-id])]
+        (if-let [order-entity  (q/order-entity db oid)]
+          (if-let [url (get req :resource-url)]
+            (assoc ctx :response (ring-resp/created url order-entity))
+            (assoc ctx :response (ring-resp/response order-entity)))
+          ctx)
+        ctx))}))
+
+(def create-order
+  (interceptor
+   {:name ::create-order
+    :enter
+    (fn [{{db :db :as req} :request :as ctx}]
+      (let [get-eid (comp #(update % :orderItem/cid  (fn [cid] (d/entid db [:cuisine/id cid])))
+                          #(update % :orderItem/spec (fn [spec] (d/entid db [:db/ident (keyword "spec.name" spec)]))))
+            transit (walk/postwalk-replace
+                     {"cid" :orderItem/cid
+                      "spec" :orderItem/spec
+                      "qty"  :orderItem/qty}
+                     (:transit-params req))
+            dbid    (d/tempid :db.part/user)
+            slug    (str (d/squuid)) ; just for demo
+            url     "https://miaomfood.com"
+            datoms  (-> transit
+                        (assoc :db/id dbid)
+                        (assoc :order/tokenSlug slug)
+                        (update :order/items (partial mapv get-eid))
+                        vector)]
+        (-> ctx
+            (assoc :tx-data datoms)
+            (assoc :response (ring-resp/response datoms))
+            (assoc-in [:request :path-params :order-id] slug)
+            (assoc-in [:request :resource-url] url))))}))
 
 (def routes
   (route/expand-routes
-   #{["/" :get (conj common-interceptors `greeting)]
-     ["/cuisines" :get (conj api-interceptors 'fetch-cuisines)]}))
+   #{["/"         :get  [html-body greeting]]
+     ["/cuisines" :get  (conj common-intc datomic-intc get-cuisines)
+      :route-name :get-cuisines]
+     ["/orders"   :post (conj common-intc view-order datomic-intc create-order)
+      :route-name :place-order]
+     ["/orders/:order-id" :get (conj common-intc datomic-intc view-order)
+      :route-name :view-order]
+     }))

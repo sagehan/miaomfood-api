@@ -45,51 +45,44 @@
     (map (comp (partial load-entity db) first)
          (anonymous-visible-ids? db))))
 
-(defn cuisine-entity
-  [conn cid]
-  (d/pull
-   (d/db conn)
-   '[:cuisine/id
-     :cuisine/name
-     :cuisine/depict
-     {:cuisine/species
-      [{:spec/name [:db/ident]}
-       {:currency/Abbr [:db/ident]}
-       :spec/duplexable
-       :spec/price
-       :spec/inventory]}]
-   [:cuisine/id cid]))
-
 (defn cuisines-entities
   [conn]
-  (let [db   (d/db conn)
-        cids (d/q '[:find [?cid ...] :in $ :where [_ :cuisine/id ?cid]] db)]
-    (into [] (map (partial cuisine-entity conn) cids))))
+  (let [db (d/db conn)]
+    (d/pull-many
+     db
+     '[:cuisine/id
+       :cuisine/name
+       :cuisine/depict
+       {:cuisine/species
+        [{:spec/name [:db/ident]}
+         {:currency/Abbr [:db/ident]}
+         :spec/duplexable
+         :spec/price
+         :spec/inventory]}]
+     (d/q '[:find [?e ...] :in $ :where [?e :cuisine/id _]] db))))
 
-(defn user-entities
+(defn user-entity
   [conn uid]
-  (d/pull (d/db conn) '[:customer/id] uid))
+  (d/pull (d/db conn) '[:customer/id uid]))
+
+(defn order-entity
+  [db oid]
+  (d/pull db '[*] [:order/tokenSlug oid]))
 
 (defn submit-order!
   [conn order-rawdata]
   (let [filter #(-> %
                     (update :db/id (fn [n] (d/tempid :db.part/user (- n))) )
-                    (update :cuisineItem/ID (fn [ID] (d/entid (d/db conn) [:cuisine/id ID])))
+                    (update :orderItem/cid (fn [ID] (d/entid (d/db conn) [:cuisine/id ID])))
                     (select-keys [:db/id
-                                  :cuisineItem/ID
-                                  :cuisineItem/spec
-                                  :cuisineItem/qty]) )
+                                  :orderItem/cid
+                                  :orderItem/spec
+                                  :orderItem/qty]) )
         items  (vec (map filter (:cart/cuisineItems order-rawdata)))
         token  (str (d/squuid)) ; just for demo
         id     (d/tempid :db.part/user)
         tx     [(-> order-rawdata
-                    (select-keys [:order/customerName
-                                  :order/customerPhone
-                                  :order/streetAddress
-                                  :order/comment
-                                  :order/schedule-day
-                                  :order/schedule-time ])
                     (assoc :db/id id
-                           :order/cuisineItems items
+                           :order/items items
                            :order/tokenSlug token))] ]
     @(d/transact conn tx) ))

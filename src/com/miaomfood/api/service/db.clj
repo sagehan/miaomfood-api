@@ -17,12 +17,16 @@
       (let [norms (c/read-resource rsc)]
         (c/ensure-conforms conn norms)))))
 
-(def db-interceptor
+(def datomic-intc
    "Provide a Datomic conn and db in all incoming requests"
    (interceptor
      {:name ::insert-datomic
-      :enter (fn [context]
+      :enter (fn [ctx]
                (let [conn (d/connect uri)]
-                 (-> context
+                 (-> ctx
                      (assoc-in [:request :conn] conn)
-                     (assoc-in [:request :db] (d/db conn)))))}))
+                     (assoc-in [:request :db] (d/db conn)))))
+      :leave (fn [{{:keys [conn]} :request :as ctx}]
+               (if-let [tx (:tx-data ctx)]
+                 (do (assoc-in ctx [:request :db] (:db-after @(d/transact conn tx))))
+                 ctx))}))

@@ -545,7 +545,7 @@
                        ]}
     {:db/id #db/id[:db.part/user -76]
      :cuisine/name "金桔柚子茶"
-     :cuisine/id "JJYZCHA"
+     :cuisine/id "JJYZCH"
      :cuisine/depict "Bacon.JPG"
      :cuisine/species [{:db/id #db/id[:db.part/user -761]
                         :spec/name :spec.name/热
