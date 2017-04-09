@@ -112,7 +112,6 @@
                         vector)]
         (-> ctx
             (assoc :tx-data datoms)
-            (assoc :response (ring-resp/response datoms))
             (assoc-in [:request :path-params :order-id] slug)
             (assoc-in [:request :resource-url] url))))}))
 
