@@ -69,20 +69,3 @@
   [db oid]
   (d/pull db '[*] [:order/tokenSlug oid]))
 
-(defn submit-order!
-  [conn order-rawdata]
-  (let [filter #(-> %
-                    (update :db/id (fn [n] (d/tempid :db.part/user (- n))) )
-                    (update :orderItem/cid (fn [ID] (d/entid (d/db conn) [:cuisine/id ID])))
-                    (select-keys [:db/id
-                                  :orderItem/cid
-                                  :orderItem/spec
-                                  :orderItem/qty]) )
-        items  (vec (map filter (:cart/cuisineItems order-rawdata)))
-        token  (str (d/squuid)) ; just for demo
-        id     (d/tempid :db.part/user)
-        tx     [(-> order-rawdata
-                    (assoc :db/id id
-                           :order/items items
-                           :order/tokenSlug token))] ]
-    @(d/transact conn tx) ))
