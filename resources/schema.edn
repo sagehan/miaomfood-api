@@ -1,7 +1,6 @@
 {:miaomfood/meta
  {:txes
   [[
- ;;;; App settings
  ;;; website
     {:db/id #db/id[:db.part/db]
      :db/ident :website/title
@@ -186,7 +185,7 @@
      :db/doc "菜品规格"
      :db.install/_attribute :db.part/db}
 
-    ;; Spec
+;;; Cuisine spec
     {:db/id #db/id[:db.part/db]
      :db/ident :spec/name
      :db/valueType :db.type/ref
@@ -230,20 +229,6 @@
      :db/noHistory true
      :db/doc "总销量计数"
      :db.install/_attribute :db.part/db}
-
-    ;; Enums
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/八寸]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/十寸]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/培根]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/海鲜]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/份]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/套]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/两对]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/六对]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/杯]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/热]
-    [:db/add #db/id[:db.part/user] :db/ident :spec.name/冰]
-    [:db/add #db/id[:db.part/user] :db/ident :currency/CNY]
 
 ;;; customer
     {:db/id #db/id[:db.part/db]
@@ -305,7 +290,6 @@
      :db/fulltext true
      :db/doc "微信ID"
      :db.install/_attribute :db.part/db}
-
 
     {:db/id #db/id[:db.part/db]
      :db/ident :customer/qq
@@ -375,13 +359,13 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :customer/ip
+     :db/ident :customer/client_ip
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/many
-     :db/doc "源ip"
+     :db/doc "最近登录ip"
      :db.install/_attribute :db.part/db}
 
-;;;; order
+;;; order
     {:db/id #db/id[:db.part/db]
      :db/ident :order/tokenSlug
      :db/valueType :db.type/string
@@ -391,17 +375,17 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/customer
+     :db/ident :order/user
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "订单顾客"
+     :db/doc "创建订单的用户"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/customer-name
+     :db/ident :order/recipient-name
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
-     :db/doc "顾客姓名"
+     :db/doc "收餐人姓名"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
@@ -412,12 +396,44 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/customer-phone
+     :db/ident :order/recipient-phone
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
-     :db/doc "配送联系方式"
+     :db/doc "收餐人联系方式"
      :db.install/_attribute :db.part/db}
 
+    {:db/id #db/id[:db.part/db]
+     :db/ident :order/comment
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "订单备注"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :order/cashToPay?
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "现金到付时，订单中添加该属性"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :order/status
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "订单状态，枚举：'CREATED','SHIPPED','DELIVERED','CANCELED'"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :order/client_ip
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "发起订单的客户端IPv4 地址"
+     :db.install/_attribute :db.part/db}
+
+;;; order items component
     {:db/id #db/id[:db.part/db]
      :db/ident :order/items
      :db/valueType :db.type/ref
@@ -455,34 +471,10 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/coupons
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/many
-     :db/isComponent true
-     :db/doc "促销码"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/total
+     :db/ident :order/amount
      :db/valueType :db.type/float
      :db/cardinality :db.cardinality/one
      :db/doc "订单总额"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/comment
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/fulltext true
-     :db/doc "订单备注"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/payment
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/one
-     ;;:db/isComponent true
-     :db/doc "支付方式"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
@@ -499,7 +491,15 @@
      :db/doc "预订时间，字符串"
      :db.install/_attribute :db.part/db}
 
-    ;; coupon
+;;; order coupons component
+    {:db/id #db/id[:db.part/db]
+     :db/ident :order/coupons
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/isComponent true
+     :db/doc "促销码"
+     :db.install/_attribute :db.part/db}
+
     {:db/id #db/id[:db.part/db]
      :db/ident :coupon/code
      :db/valueType :db.type/string
@@ -544,24 +544,76 @@
      :db/doc "促销码失效日期，单位Unix时间戳"
      :db.install/_attribute :db.part/db}
 
-    ;; payment
+;;; order charge component
     {:db/id #db/id[:db.part/db]
-     :db/ident :payment/receiver
+     :db/ident :order/charge
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "收款方或到付，枚举型，'到付'，'微信支付', '支付宝'"
+     :db/isComponent true
+     :db/doc "收费凭证"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :payment/transaction-ID
+     :db/ident :charge/id
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "收费凭证号"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :charge/amount
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "订单总金额（必须大于0），单位为人民币元"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :payment/channel
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/one
+     :db/doc "支付渠道，枚举值"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :charge/created
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "支付创建时的 Unix 时间戳"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :charge/time_paid
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "支付完成时的 Unix 时间戳"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :charge/transaction_no
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/unique :db.unique/identity
      :db/fulltext true
-     :db/doc "支付平台结算流水号"
+     :db/doc "支付平台交易流水号"
      :db.install/_attribute :db.part/db}
 
-;;;; Enums
+;;; Functions
+
+
+;;; Enums
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/八寸]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/十寸]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/培根]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/海鲜]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/份]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/套]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/两对]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/六对]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/杯]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/热]
+    [:db/add #db/id[:db.part/user] :db/ident :spec.name/冰]
+    [:db/add #db/id[:db.part/user] :db/ident :currency/CNY]
+
     [:db/add #db/id[:db.part/user] :db/ident :rest-day/周一]
     [:db/add #db/id[:db.part/user] :db/ident :rest-day/周二]
     [:db/add #db/id[:db.part/user] :db/ident :rest-day/周三]
@@ -574,13 +626,17 @@
     [:db/add #db/id[:db.part/user] :db/ident :gender/女士]
     [:db/add #db/id[:db.part/user] :db/ident :gender/其她]
 
-    [:db/add #db/id[:db.part/user] :db/ident :order.schedule-day/今日]
-    [:db/add #db/id[:db.part/user] :db/ident :order.schedule-day/明日]
+    [:db/add #db/id[:db.part/user] :db/ident :order.status/CREATED]
+    [:db/add #db/id[:db.part/user] :db/ident :order.status/SHIPPED]
+    [:db/add #db/id[:db.part/user] :db/ident :order.status/CANCELED]
+    [:db/add #db/id[:db.part/user] :db/ident :order.status/DELIVERED]
 
     [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/直减]
     [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/折扣]
 
-    [:db/add #db/id[:db.part/user] :db/ident :payment.receiver/到付]
-    [:db/add #db/id[:db.part/user] :db/ident :payment.receiver/微信支付]
-    [:db/add #db/id[:db.part/user] :db/ident :payment.receiver/支付宝]
+    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/wx]
+    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/wx_pub]
+    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/alipay]
+    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/alipay_wap]
+    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/upacp]
     ]]}}

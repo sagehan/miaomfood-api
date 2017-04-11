@@ -1,19 +1,20 @@
+;; Copyright 2017 Sage Han <zongshian@gmail.com> https://heysage.com
+;; All right reserved
+
 (ns com.miaomfood.api.service.routes
   "Main restful api logic for miaomfood.com"
   (:require
-   [ring.util.response :as ring-resp]
-   [com.miaomfood.api.service.db :as db :refer [datomic-intc]]
-   [com.miaomfood.api.service.qpi :as q]
-   [datomic.api :as d]
-   [clojure.walk :as walk]
    [cognitect.transit :as t]
    [clojure.data.json :as json]
-   [io.pedestal.http :as http :refer [html-body]]
+   [ring.util.response :as ring-resp]
    [io.pedestal.http.route :as route]
    [io.pedestal.interceptor :refer [interceptor]]
-   [io.pedestal.interceptor.helpers :refer [defhandler]]
+   [io.pedestal.http :refer [html-body]]
    [io.pedestal.http.body-params :refer [body-params]]
-   [io.pedestal.http.content-negotiation :as conneg])
+   [io.pedestal.http.content-negotiation :as conneg]
+   [com.miaomfood.api.service.qpi :as q]
+   [com.miaomfood.api.service.db :refer [datomic-intc]]
+   [com.miaomfood.api.service.order :refer [create-order make-charge view-order]])
   (:import
    [java.io ByteArrayInputStream ByteArrayOutputStream]))
 
@@ -68,7 +69,7 @@
 ;;
 ;; defhandler and its macro brothers will break AOT, will be removed on next commit
 ;; see https://github.com/pedestal/pedestal/issues/308
-(defhandler greeting [req] (ring-resp/response "Welcome to miaomfood!"))
+(defn greeting [req] (ring-resp/response "Welcome to miaomfood!"))
 
 (def get-cuisines
   (interceptor
@@ -77,50 +78,15 @@
     (fn [{{:keys [conn]} :request :as ctx}]
       (assoc ctx :response (ring-resp/response (q/cuisines-entities conn))))}))
 
-(def view-order
-  (interceptor
-   {:name ::view-order
-    :leave
-    (fn [{{db :db :as req} :request :as ctx}]
-      (if-let [oid (get-in req [:path-params :order-id])]
-        (if-let [order-entity  (q/order-entity db oid)]
-          (if-let [url (get req :resource-url)]
-            (assoc ctx :response (ring-resp/created url order-entity))
-            (assoc ctx :response (ring-resp/response order-entity)))
-          ctx)
-        ctx))}))
-
-(def create-order
-  (interceptor
-   {:name ::create-order
-    :enter
-    (fn [{{db :db :as req} :request :as ctx}]
-      (let [get-eid (comp #(update % :orderItem/cid  (fn [cid] (d/entid db [:cuisine/id cid])))
-                          #(update % :orderItem/spec (fn [spec] (d/entid db [:db/ident (keyword "spec.name" spec)]))))
-            transit (walk/postwalk-replace
-                     {"cid" :orderItem/cid
-                      "spec" :orderItem/spec
-                      "qty"  :orderItem/qty}
-                     (:transit-params req))
-            dbid    (d/tempid :db.part/user)
-            slug    (str (d/squuid)) ; just for demo
-            url     (route/url-for :view-order :params {:order-id slug})
-            datoms  (-> transit
-                        (assoc :db/id dbid)
-                        (assoc :order/tokenSlug slug)
-                        (update :order/items (partial mapv get-eid))
-                        vector)]
-        (-> ctx
-            (assoc :tx-data datoms)
-            (assoc-in [:request :path-params :order-id] slug)
-            (assoc-in [:request :resource-url] url))))}))
-
+;;
+;; Main route interceptor
+;;
 (def routes
   (route/expand-routes
-   #{["/"         :get  [html-body greeting]]
+   #{["/"         :get  [html-body 'greeting]]
      ["/cuisines" :get  (conj common-intc datomic-intc get-cuisines)
       :route-name :get-cuisines]
-     ["/orders"   :post (conj common-intc view-order datomic-intc create-order)
+     ["/orders"   :post (conj common-intc view-order datomic-intc create-order make-charge)
       :route-name :place-order]
      ["/orders/:order-id" :get (conj common-intc datomic-intc view-order)
       :route-name :view-order]

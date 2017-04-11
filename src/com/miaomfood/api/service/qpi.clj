@@ -1,3 +1,6 @@
+;; Copyright 2017 Sage Han <zongshian@gmail.com> https://heysage.com
+;; All right reserved
+
 (ns com.miaomfood.api.service.qpi
   "Merely some query interfaces for datomic backend"
   (:require

@@ -1,31 +1,36 @@
-(set-env! :source-paths   #{"src"}
-          :test-paths     #{"test"}
-          :resource-paths #{"resources" "config"}
-          :dependencies   '[[org.clojure/clojure "1.8.0"]
-                            [io.pedestal/pedestal.service "0.5.2"]
-                            [io.pedestal/pedestal.jetty "0.5.2"]
-                            [org.clojure/data.json       "0.2.6"]
-                            ;; [com.taoensso/nippy "2.13.0"]
+(set-env!
+ :source-paths   #{"src"}
+ :test-paths     #{"test"}
+ :resource-paths #{"resources" "config"}
+ :dependencies
+ '[[org.clojure/clojure "1.8.0"]
+   [io.pedestal/pedestal.service "0.5.2"]
+   [io.pedestal/pedestal.jetty "0.5.2"]
+   [org.clojure/data.json       "0.2.6"]
+   ;; [com.taoensso/nippy "2.13.0"]
 
-                            [ns-tracker "0.3.1"]
-                            [environ "1.1.0"]
+   [ns-tracker "0.3.1"]
+   [environ "1.1.0"]
 
-                            ;; Datomic, if your heart desires it
-                            [com.datomic/datomic-pro "0.9.5561"
-                             :exclusions [joda-time
-                                          org.slf4j/slf4j-nop
-                                          org.slf4j/slf4j-log4j12]]
-                            [io.rkn/conformity "0.4.0"
-                             :exclusions [com.datomic/datomic-free]]
-                            [org.postgresql/postgresql "9.3-1102-jdbc41"]
+   ;; HTTP client to request 3rd part payment RESTful APIs
+   [http-kit "2.2.0"]
 
-                            [org.clojure/algo.generic  "0.1.2"]
-                            ;; Logging
-                            [ch.qos.logback/logback-classic "1.1.2"
-                             :exclusions [org.slf4j/slf4j-api]]
-                            [org.slf4j/jul-to-slf4j "1.7.7"]
-                            [org.slf4j/jcl-over-slf4j "1.7.7"]
-                            [org.slf4j/log4j-over-slf4j "1.7.7"]])
+   ;; Datomic, if your heart desires it
+   [com.datomic/datomic-pro "0.9.5561"
+    :exclusions [joda-time
+                 org.slf4j/slf4j-nop
+                 org.slf4j/slf4j-log4j12]]
+   [io.rkn/conformity "0.4.0"
+    :exclusions [com.datomic/datomic-free]]
+   [org.postgresql/postgresql "9.3-1102-jdbc41"]
+
+   [org.clojure/algo.generic  "0.1.2"]
+   ;; Logging
+   [ch.qos.logback/logback-classic "1.1.2"
+    :exclusions [org.slf4j/slf4j-api]]
+   [org.slf4j/jul-to-slf4j "1.7.7"]
+   [org.slf4j/jcl-over-slf4j "1.7.7"]
+   [org.slf4j/log4j-over-slf4j "1.7.7"]])
 
 (def version "0.0.1-SNAPSHOT")
 (task-options! pom {:project 'miaomfood-api
@@ -43,7 +48,6 @@
   ((resolve 'db/bootstrap!) @(resolve 'com.miaomfood.api.service.db/uri)))
 
 ;; == Testing tasks ========================================
-
 (deftask with-test
   "Add test to source paths"
   []
@@ -70,8 +74,7 @@
     (doall (map require test-nses))
     (apply clojure.test/run-tests test-nses)))
 
-;; == Server Tasks =========================================
-
+;; == Build Tasks =========================================
 (deftask build
   "Build my project."
   []
@@ -82,6 +85,7 @@
 
 (require '[com.miaomfood.api.server :as com.miaomfood.api.server])
 
+;; == Server Tasks =========================================
 (deftask server
   "Run a web server"
   []
