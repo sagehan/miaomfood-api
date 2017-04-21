@@ -3,14 +3,29 @@
   [[
  ;;; website
     {:db/id #db/id[:db.part/db]
-     :db/ident :website/title
+     :db/ident :WebSite/name
      :db/valueType :db.type/string
+     :db/unique :db.unique/identity
      :db/cardinality :db.cardinality/one
      :db/doc "网站标题"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :website/notices
+     :db/ident :WebSite/alternativeName
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "网站副标题"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :WebSite/description
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "网站描述"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :WebSite/notices
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/many
      :db/doc "布告栏"
@@ -37,7 +52,8 @@
      :db/doc "布告优先级"
      :db.install/_attribute :db.part/db}
 
- ;;;; Golobal settings
+ ;;; Global Settings
+
     {:db/id #db/id[db.part/db]
      :db/ident :threshold/oldCustomer
      :db/valueType :db.type/long
@@ -45,98 +61,197 @@
      :db/doc "熟客门槛"
      :db.install/_attribute :db.part/db}
 
- ;;;; menu
+ ;;; Restaurant
     {:db/id #db/id[:db.part/db]
-     :db/ident :group/menus
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/many
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :menu/name
+     :db/ident :Restaurant/name
      :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "分组名称"
      :db/unique :db.unique/identity
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :menu/categories
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/many
-     :db/doc "所含菜品种类"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :category/name
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "品类名称"
-     :db/unique :db.unique/identity
-     :db/fulltext true
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :category/cuisines
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/many
-     :db/doc "所含菜品"
-     :db.install/_attribute :db.part/db}
-
- ;;; restaurant
-    {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/name
-     :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "餐厅名称"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/slogan
+     :db/ident :Restaurant/description
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
-     :db/doc "餐厅口号"
+     :db/doc "餐厅描述"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/phone
+     :db/ident :Restaurant/telephone
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "餐厅电话"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/wechatID
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "餐厅微信ID"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/address
+     :db/ident :Restaurant/streetAddress
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "餐厅地址"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/isClosed
+     :db/ident :Restaurant/hasMap
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "餐厅地图链接"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/openingHours
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/many
+     :db/doc "营业时间"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/currenciesAccepted
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/one
+     :db/doc "结算币种"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/priceRange
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "标价范围"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/paymentAccepted
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "付款方式"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/acceptsReservations
      :db/valueType :db.type/boolean
      :db/cardinality :db.cardinality/one
-     :db/doc "是否打烊"
+     :db/doc "餐厅是否接受预定"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/isOpen
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/doc "是否正在营业中"
      :db/noHistory true
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :restaurant/rest-day
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/one
-     :db/doc "休息日，枚举型，'周一','周二',等等"
+     :db/ident :Restaurant/servesCuisine
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/many
+     :db/doc "经营菜系"
      :db.install/_attribute :db.part/db}
 
- ;;; cuisine
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisine/name
+     :db/ident :Restaurant/makesOffer
+     :db/isComponent true
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "有偿服务"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :makesOffer/itemOffered
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "服务内容"
+     :db.install/_attribute :db.part/db}
+
+;;; service
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Service/description
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "服务描述"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Service/serviceType
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "服务类型"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Service/areaServed
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "服务区域说明"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Service/hoursAvailable
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/many
+     :db/doc "服务时段"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Service/offers
+     :db/isComponent true
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "服务项目"
+     :db.install/_attribute :db.part/db}
+
+ ;;; menu
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Restaurant/hasMenu
+     :db/isComponent true
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "餐厅菜单"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Menu/inLanguage
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "菜单语言"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Menu/name
+     :db/valueType :db.type/string
+     :db/unique :db.unique/identity
+     :db/cardinality :db.cardinality/one
+     :db/doc "菜单名称"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Menu/hasMenuSection
+     :db/isComponent true
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "所含菜品种类"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :MenuSection/name
+     :db/valueType :db.type/string
+     :db/unique :db.unique/identity
+     :db/cardinality :db.cardinality/one
+     :db/doc "品类名称"
+     :db/fulltext true
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :MenuSection/hasMenuItem
+     :db/isComponent true
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "所含品目"
+     :db.install/_attribute :db.part/db}
+
+ ;;; MenuItem
+    {:db/id #db/id[:db.part/db]
+     :db/ident :MenuItem/name
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/unique :db.unique/value
@@ -145,7 +260,7 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisine/shortname
+     :db/ident :MenuItem/alternateName
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/unique :db.unique/identity
@@ -154,220 +269,108 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisine/id
+     :db/ident :MenuItem/productID
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/unique :db.unique/identity
      :db/fulltext true
-     :db/doc "菜品简拼"
+     :db/doc "菜品ID"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisine/doc
+     :db/ident :MenuItem/description
      :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/many
+     :db/cardinality :db.cardinality/one
      :db/fulltext true
      :db/doc "菜品描述"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisine/depict
+     :db/ident :MenuItem/image
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/many
      :db/doc "菜品图片文件名"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :cuisine/species
+     :db/ident :MenuItem/offers
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/many
      :db/isComponent true
-     :db/doc "菜品规格"
+     :db/doc "可选规格"
      :db.install/_attribute :db.part/db}
 
-;;; Cuisine spec
+;;; offer (used by MenuItem or service)
     {:db/id #db/id[:db.part/db]
-     :db/ident :spec/name
+     :db/ident :Offer/name
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "规格，枚举型，'10寸'，'8寸'，等等"
+     :db/doc "餐品规格或服务项目名称，枚举型"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :currency/Abbr
+     :db/ident :Offer/priceCurrency
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "币种，枚举型，'CNY'等等"
+     :db/doc "标价币种"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :spec/duplexable
-     :db/valueType :db.type/boolean
-     :db/cardinality :db.cardinality/one
-     :db/doc "能否双拼？"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :spec/price
+     :db/ident :Offer/price
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "售价"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :spec/inventory
+     :db/ident :Offer/inventoryLevel
+     :db/noHistory true
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
-     :db/noHistory true
      :db/doc "库存"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :spec/soldTotal
-     :db/valueType :db.type/long
-     :db/cardinality :db.cardinality/one
+     :db/ident :Offer/availability
      :db/noHistory true
-     :db/doc "总销量计数"
-     :db.install/_attribute :db.part/db}
-
-;;; customer
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/id
-     :db/valueType :db.type/uuid
-     :db/cardinality :db.cardinality/one
-     :db/unique :db.unique/identity
-     :db/doc "用户ID"
-     :db.install/_attribute :db.part/db}
-
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/phone
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/unique :db.unique/identity
-     :db/fulltext true
-     :db/doc "手机号"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/username
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/fulltext true
-     :db/doc "用户名"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/gender
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "性别"
+     :db/doc "是否估清"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :customer/streetAddress
+     :db/ident :spec/duplexable
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/noHistory true
+     :db/doc "能否双拼？"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Offer/areaServed
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
-     :db/unique :db.unique/identity
-     :db/fulltext true
-     :db/doc "地址"
+     :db/doc "地区限制"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :customer/email
+     :db/ident :Offer/deliveryLeadTime
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
-     :db/unique :db.unique/identity
-     :db/fulltext true
-     :db/doc "邮件"
+     :db/doc "从确认订单到出餐所需要的时间"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :customer/wechat
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/unique :db.unique/identity
-     :db/fulltext true
-     :db/doc "微信ID"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/qq
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/unique :db.unique/identity
-     :db/fulltext true
-     :db/doc "QQ号"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/password
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "哈希密码"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/totalConsume
+     :db/ident :Offer/soldTotal
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/noHistory true
-     :db/doc "消费总额"
+     :db/doc "供出的offer计数"
      :db.install/_attribute :db.part/db}
 
+;;; Order
     {:db/id #db/id[:db.part/db]
-     :db/ident :customer/totalPurchase
-     :db/valueType :db.type/long
-     :db/cardinality :db.cardinality/one
-     :db/noHistory true
-     :db/doc "订购次数"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/likes
-     :db/valueType :db.type/ref
-     :db/cardinality :db.cardinality/many
-     :db/doc "喜爱的菜品"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/isNew
-     :db/valueType :db.type/boolean
-     :db/cardinality :db.cardinality/one
-     :db/doc "是否新用户"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/isRegular
-     :db/valueType :db.type/boolean
-     :db/cardinality :db.cardinality/one
-     :db/doc "是否熟客"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/isSuspicious
-     :db/valueType :db.type/boolean
-     :db/cardinality :db.cardinality/one
-     :db/doc "是否可疑"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/isBlocked
-     :db/valueType :db.type/boolean
-     :db/cardinality :db.cardinality/one
-     :db/doc "是否被锁"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :customer/client_ip
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/many
-     :db/doc "最近登录ip"
-     :db.install/_attribute :db.part/db}
-
-;;; order
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/tokenSlug
+     :db/ident :Order/orderNumber
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/unique :db.unique/value
@@ -375,35 +378,14 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/user
+     :db/ident :Order/account
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
-     :db/doc "创建订单的用户"
+     :db/doc "创建订单的账户"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/recipient-name
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "收餐人姓名"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/street-addr
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "配送地址"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/recipient-phone
-     :db/valueType :db.type/string
-     :db/cardinality :db.cardinality/one
-     :db/doc "收餐人联系方式"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/comment
+     :db/ident :Order/comment
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/fulltext true
@@ -411,7 +393,15 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/cashToPay?
+     :db/ident :Order/isGift
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "是否需要礼盒包装"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/cashToPay?
      :db/valueType :db.type/boolean
      :db/cardinality :db.cardinality/one
      :db/fulltext true
@@ -419,23 +409,97 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/status
-     :db/valueType :db.type/ref
+     :db/ident :Order/amount
+     :db/valueType :db.type/float
      :db/cardinality :db.cardinality/one
-     :db/fulltext true
-     :db/doc "订单状态，枚举：'CREATED','SHIPPED','DELIVERED','CANCELED'"
+     :db/doc "订单总额"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/client_ip
+     :db/ident :Order/orderDate
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "订单创建的日期及时间"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/orderStatus
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "订单状态，枚举值"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/client_ip
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "发起订单的客户端IPv4 地址"
      :db.install/_attribute :db.part/db}
 
-;;; order items component
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/items
+     :db/ident :Customer/name
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "收餐客户姓名"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Customer/telephone
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "收餐客户电话"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Customer/address
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "收餐客户地址"
+     :db.install/_attribute :db.part/db}
+
+;;; delivery info component
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/customer
+     :db/valueType :db.type/ref
+     :db/isComponent true
+     :db/cardinality :db.cardinality/many
+     :db/doc "订单客户信息"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/orderDelivery
+     :db/valueType :db.type/ref
+     :db/isComponent true
+     :db/cardinality :db.cardinality/one
+     :db/doc "订单配送信息"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :ParcelDelivery/deliveryAddress
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "配送地址"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :ParcelDelivery/itemShipped
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "配送清单"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :ParcelDelivery/provider
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/one
+     :db/doc "送餐员"
+     :db.install/_attribute :db.part/db}
+
+;;; Order items component
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/OrderedItems
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/many
      :db/isComponent true
@@ -443,21 +507,21 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :orderItem/cid
+     :db/ident :OrderItem/cid
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品ID"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :orderItem/spec
+     :db/ident :OrderItem/spec
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品规格"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :orderItem/qty
+     :db/ident :OrderItem/qty
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品订购数量"
@@ -471,29 +535,22 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/amount
-     :db/valueType :db.type/float
-     :db/cardinality :db.cardinality/one
-     :db/doc "订单总额"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
-     :db/ident :order/schedule-day
+     :db/ident :Order/schedule-day
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "预订日期，0表示当日，1表示次日，以此类推'"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/schedule-time
+     :db/ident :Order/schedule-time
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "预订时间，字符串"
      :db.install/_attribute :db.part/db}
 
-;;; order coupons component
+;;; Order coupons component
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/coupons
+     :db/ident :Order/coupons
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/many
      :db/isComponent true
@@ -544,9 +601,9 @@
      :db/doc "促销码失效日期，单位Unix时间戳"
      :db.install/_attribute :db.part/db}
 
-;;; order charge component
+;;; Order charge component
     {:db/id #db/id[:db.part/db]
-     :db/ident :order/charge
+     :db/ident :Order/charge
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/isComponent true
@@ -597,10 +654,150 @@
      :db/doc "支付平台交易流水号"
      :db.install/_attribute :db.part/db}
 
+;;; user
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/id
+     :db/valueType :db.type/uuid
+     :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
+     :db/doc "用户ID"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/name
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
+     :db/doc "用户名"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/telephone
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
+     :db/fulltext true
+     :db/doc "手机号"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/gender
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/one
+     :db/doc "性别"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/address
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/fulltext true
+     :db/doc "地址"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/email
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
+     :db/fulltext true
+     :db/doc "邮件"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/wechat
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
+     :db/fulltext true
+     :db/doc "微信ID"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/qq
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
+     :db/fulltext true
+     :db/doc "QQ号"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/password
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/one
+     :db/doc "哈希密码"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/totalConsume
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/noHistory true
+     :db/doc "消费总额"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/totalPurchase
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/noHistory true
+     :db/doc "订购次数"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/likes
+     :db/valueType :db.type/ref
+     :db/cardinality :db.cardinality/many
+     :db/doc "喜爱的菜品"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/isNew
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/doc "是否新用户"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/isRegular
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/doc "是否熟客"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/isSuspicious
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/doc "是否可疑"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/isBlocked
+     :db/valueType :db.type/boolean
+     :db/cardinality :db.cardinality/one
+     :db/doc "是否被锁"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :user/client_ip
+     :db/valueType :db.type/string
+     :db/cardinality :db.cardinality/many
+     :db/doc "最近登录ip"
+     :db.install/_attribute :db.part/db}
+
 ;;; Functions
 
 
 ;;; Enums
+    [:db/add #db/id[:db.part/user] :db/ident :service.areaServed/乌鲁木齐]
+
+    [:db/add #db/id[:db.part/user] :db/ident :currency/CNY]
+    [:db/add #db/id[:db.part/user] :db/ident :language/zh-CN]
+
+    [:db/add #db/id[:db.part/user] :db/ident :offer.name/送餐服务]
+
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/八寸]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/十寸]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/培根]
@@ -612,31 +809,28 @@
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/杯]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/热]
     [:db/add #db/id[:db.part/user] :db/ident :spec.name/冰]
-    [:db/add #db/id[:db.part/user] :db/ident :currency/CNY]
 
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周一]
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周二]
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周三]
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周四]
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周五]
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周六]
-    [:db/add #db/id[:db.part/user] :db/ident :rest-day/周日]
+    [:db/add #db/id[:db.part/user] :db/ident :gender/Male]
+    [:db/add #db/id[:db.part/user] :db/ident :gender/Female]
+    [:db/add #db/id[:db.part/user] :db/ident :gender/Others]
 
-    [:db/add #db/id[:db.part/user] :db/ident :gender/男士]
-    [:db/add #db/id[:db.part/user] :db/ident :gender/女士]
-    [:db/add #db/id[:db.part/user] :db/ident :gender/其她]
+    [:db/add #db/id[:db.part/user] :db/ident :ItemAvailability/inStock]
+    [:db/add #db/id[:db.part/user] :db/ident :ItemAvailability/SoldOut]
+    [:db/add #db/id[:db.part/user] :db/ident :ItemAvailability/SoldOut]
 
-    [:db/add #db/id[:db.part/user] :db/ident :order.status/CREATED]
-    [:db/add #db/id[:db.part/user] :db/ident :order.status/SHIPPED]
-    [:db/add #db/id[:db.part/user] :db/ident :order.status/CANCELED]
-    [:db/add #db/id[:db.part/user] :db/ident :order.status/DELIVERED]
+    [:db/add #db/id[:db.part/user] :db/ident :OrderStatus/OrderCancelled]
+    [:db/add #db/id[:db.part/user] :db/ident :OrderStatus/OrderDelivered]
+    [:db/add #db/id[:db.part/user] :db/ident :OrderStatus/OrderInTransit]
+    [:db/add #db/id[:db.part/user] :db/ident :OrderStatus/OrderPaymentDue]
+    [:db/add #db/id[:db.part/user] :db/ident :OrderStatus/OrderProcessing]
+
+    [:db/add #db/id[:db.part/user] :db/ident :PaymentMethod/Cash]
+    [:db/add #db/id[:db.part/user] :db/ident :PaymentMethod/alipay]
+    [:db/add #db/id[:db.part/user] :db/ident :PaymentMethod/alipay_wap]
+    [:db/add #db/id[:db.part/user] :db/ident :PaymentMethod/upacp]
+    [:db/add #db/id[:db.part/user] :db/ident :PaymentMethod/wx]
+    [:db/add #db/id[:db.part/user] :db/ident :PaymentMethod/wx_pub]
 
     [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/直减]
     [:db/add #db/id[:db.part/user] :db/ident :cupon.operator/折扣]
-
-    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/wx]
-    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/wx_pub]
-    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/alipay]
-    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/alipay_wap]
-    [:db/add #db/id[:db.part/user] :db/ident :payment.channel/upacp]
     ]]}}
