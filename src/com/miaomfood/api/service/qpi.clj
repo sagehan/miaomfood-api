@@ -4,65 +4,53 @@
 (ns com.miaomfood.api.service.qpi
   "Merely some query interfaces for datomic backend"
   (:require
-    [datomic.api :as d]
-    [clojure.algo.generic.functor :refer [fmap]]))
+   [datomic.api :as d]
+   [clojure.walk :refer [prewalk]]
+   [clojure.algo.generic.functor :refer [fmap]]))
 
-;; Copyright (c) https://github.com/danielneal/  ==== start =========================
+(def dissoc-dbid #(if (map? %) (dissoc % :db/id) %))
 
-(defn- load-entity
-  "Loads an entity and its attributes. Keep in the db/id
-  and replace references with ids (for use by DataScript)"
-  [db entity]
-  (as->
-   (d/entity db entity) e
-   (d/touch e)
-   (into {:db/id (:db/id e)} e) ; needs to be a hash-map, not an entity map
-   (fmap (fn [v]
-           (cond (set? v) (mapv #(if (instance? datomic.query.EntityMap %) (:db/id %) %) v)
-                 (instance? datomic.query.EntityMap v) (:db/id v)
-                 :else v)) e)))
+(def stringify-enum
+  #(if (and (map? %) (= 1 (count %)) (:db/ident %))
+     (-> % :db/ident name) %))
 
-;; Copyright (c) https://github.com/danielneal/  ==== end =========================
+(def expand-enum-dbid
+  (fn [db col]
+    (if (and (map? col) (= 1 (count col)) (:db/id col))
+      (->> col :db/id (d/entity db)) col)))
 
-(defn- anonymous-visible-ids?
-  "Get all IDs of entities that could be accessible to anonymous customers"
-  [db]
-  (d/q '[:find ?e
-         :in $ %
-         :where (visible? ?e)]
-       db
-       '[[(visible? ?wt) [?wt :website/title]]
-         [(visible? ?wn) [?wn :website/notices]]
-         [(visible? ?rn) [?rn :restaurant/name]]
-         [(visible? ?nc) [?nc :notice/content]]
-         [(visible? ?gm) [?gm :group/menus]]
-         [(visible? ?mc) [?mc :menu/categories]]
-         [(visible? ?cc) [?cc :category/cuisines]]
-         [(visible? ?cs) [?cs :cuisine/species]]
-         [(visible? ?sn) [?sn :spec/name]]
-         ]))
+(def render-entity
+  #(if (instance? datomic.query.EntityMap %) (into {} %) %))
 
-(defn anonymous-visible-entities
+(defn restaurant-entities
   [conn]
   (let [db (d/db conn)]
-    (map (comp (partial load-entity db) first)
-         (anonymous-visible-ids? db))))
+    (->> (d/pull
+          db
+          '[*]
+          (first (d/q '[:find [?e ...] :where [?e :Restaurant/name _]] db)))
+         (prewalk
+          (comp dissoc-dbid
+                stringify-enum
+                render-entity
+                (partial expand-enum-dbid db))))))
 
 (defn cuisines-entities
   [conn]
   (let [db (d/db conn)]
-    (d/pull-many
-     db
-     '[:cuisine/id
-       :cuisine/name
-       :cuisine/depict
-       {:cuisine/species
-        [{:spec/name [:db/ident]}
-         {:currency/Abbr [:db/ident]}
-         :spec/duplexable
-         :spec/price
-         :spec/inventory]}]
-     (d/q '[:find [?e ...] :in $ :where [?e :cuisine/id _]] db))))
+    (->> (d/pull-many
+          db
+          '[:MenuItem/productID
+            :MenuItem/name
+            :MenuItem/image
+            {:MenuItem/offers
+             [{:Offer/name [:db/ident]}
+              :Offer/price
+              {:Offer/priceCurrency [:db/ident]}
+              :Offer/inventoryLevel
+              :spec/duplexable]}]
+          (d/q '[:find [?e ...] :in $ :where [?e :MenuItem/productID _]] db))
+         (prewalk stringify-enum))))
 
 (defn user-entity
   [conn uid]

@@ -36,7 +36,7 @@
   [body content-type]
   (case content-type
     "text/html"        body
-    "text/plain"       body
+    "text/plain"       (json/write-str body) ;; here use json as body for test
     "application/edn"  (pr-str body)
     "application/json" (json/write-str body)
     "application/transit+json" (@json-packaged body)))
@@ -67,9 +67,12 @@
 ;;
 ;; API special Interceptors & Handlers
 ;;
-;; defhandler and its macro brothers will break AOT, will be removed on next commit
-;; see https://github.com/pedestal/pedestal/issues/308
-(defn greeting [req] (ring-resp/response "Welcome to miaomfood!"))
+(def get-all
+  (interceptor
+   {:name ::get-all
+    :enter
+    (fn [{{:keys [conn]} :request :as ctx}]
+      (assoc ctx :response (ring-resp/response (q/restaurant-entities conn))))}))
 
 (def get-cuisines
   (interceptor
@@ -83,11 +86,11 @@
 ;;
 (def routes
   (route/expand-routes
-   #{["/"         :get  [html-body 'greeting]]
-     ["/cuisines" :get  (conj common-intc datomic-intc get-cuisines)
+   #{["/api" :get (conj common-intc datomic-intc get-all) :route-name :about]
+     ["/api/v1/cuisines" :get  (conj common-intc datomic-intc get-cuisines)
       :route-name :get-cuisines]
-     ["/orders"   :post (conj common-intc view-order datomic-intc create-order make-charge)
+     ["/api/v1/orders"   :post (conj common-intc view-order datomic-intc create-order make-charge)
       :route-name :place-order]
-     ["/orders/:order-id" :get (conj common-intc datomic-intc view-order)
+     ["/api/v1/orders/:order-id" :get (conj common-intc datomic-intc view-order)
       :route-name :view-order]
      }))
