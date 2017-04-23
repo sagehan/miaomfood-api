@@ -632,7 +632,14 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :charge/time_paid
+     :db/ident :charge/timeExpire
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "未支付订单的过期 Unix 时间戳"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :charge/timePaid
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "支付完成时的 Unix 时间戳"

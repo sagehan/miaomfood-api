@@ -15,6 +15,7 @@
    [com.miaomfood.api.service.qpi :as q]
    [clojure.string :as str]))
 
+(defonce open-id (get env :open-id "gualala"))
 (defonce app-id (get env :app-id ""))
 (defonce api-key (get env :api-key ""))
 (defonce charge-api "https://api.pingxx.com/v1/charges")
@@ -25,7 +26,7 @@
     :leave
     (fn [{{db :db :as req} :request :as ctx}]
       (if-let [oid (get-in req [:path-params :order-id])]
-        (if-let [entity  (:tx-charge ctx)]
+        (if-let [entity (:tx-data ctx)]
           (if-let [url (get req :resource-url)]
             (assoc ctx :response (ring-resp/created url entity))
             (assoc ctx :response (ring-resp/response entity)))
@@ -50,7 +51,7 @@
                       "name" :Offer/name}
                      (:transit-params req))
             dbid (d/tempid :db.part/user)
-            slug    (str (d/squuid)) ; just for demo
+            slug    (s/replace (str (d/squuid)) #"-" {"-" ""}) ; just for demo
             url     (route/url-for :view-order :params {:order-id slug})
             datoms  (-> transit
                         (assoc  :db/id dbid
@@ -62,30 +63,43 @@
         (-> ctx
             (assoc :tx-data datoms)
             (assoc-in [:request :path-params :order-id] slug)
-            (assoc-in [:request :resource-url] url))))}))
+            (assoc-in [:request :resource-url] url))))
+    :leave
+    (fn [ctx]
+      (if-let [{chg :tx-charge} ctx]
+        (update-in ctx [:tx-data 0 :Order/charge]
+                   assoc
+                   :charge/id (get chg "id")
+                   :charge/created (get chg "created")
+                   :charge/timeExpire (get chg "time_expire"))
+        ctx))}))
 
 (def make-charge
   (interceptor
    {:name ::make-charge
     :enter
     (fn [ctx]
-      (if-let [{{chn :charge/paymentMethod, :as tx} :tx-data} ctx]
-        (let [opts {:insecure? true
-                    :basic-auth [api-key ""]
-                    :header {"Authorization" (str "Bearer " api-key)}
-                    :form-params
-                    {:order_no
-                     (s/replace (get-in tx [0 :Order/orderNumber]) #"-" {"-" ""})
-                     (keyword "app[id]") app-id
-                     :channel   "alipay_wap"
-                     :extra     {:success_url "https://miaomfood.com/"}
-                     :amount    12156
-                     :client_ip "127.0.0.1"
-                     :currency  "cny"
-                     :subject   "买买买"
-                     :body      "好好好"}}
-              {:keys [status headers body error] :as resp} @(http/post charge-api opts)]
-          (if error
-            (println "Failed, exception is " error)
-            (assoc ctx :tx-charge (json/read-str body))))
+      (if-let [{ [{{chn :charge/paymentMethod} :Order/charge :as tx}] :tx-data} ctx]
+        (if-not (= "Cash" (name chn))
+          (let [cb_url      "https://miaomfood.com/"
+                assoc-extra #(case (name chn)
+                               "wx_pub" (assoc-in % [:form-params :extra :open_id] open-id)
+                               "alipay_wap" (assoc-in % [:form-params :extra :success_url] cb_url))
+                opts (-> {:insecure? true
+                          :basic-auth [api-key ""]
+                          :header {"Authorization" (str "Bearer " api-key)}
+                          :form-params
+                          {:order_no  (:Order/orderNumber tx)
+                           (keyword "app[id]") app-id
+                           :channel   (name chn)
+                           :amount    (or (:Order/amount tx) 11800)
+                           :client_ip "127.0.0.1"
+                           :currency  "cny"
+                           :subject   "买买买"
+                           :body      "好好好"}} assoc-extra)
+                {:keys [status headers body error] :as resp} @(http/post charge-api opts)]
+            (if error
+              (println "Failed, exception is " error)
+              (assoc ctx :tx-charge (json/read-str body))))
+          ctx)
         ctx))}))
