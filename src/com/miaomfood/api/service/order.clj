@@ -24,12 +24,12 @@
   (interceptor
    {:name ::view-order
     :leave
-    (fn [{{db :db :as req} :request :as ctx}]
+    (fn [{{db :db :as req} :request chg :tx-charge :as ctx}]
       (if-let [oid (get-in req [:path-params :order-id])]
-        (if-let [entity (:tx-data ctx)]
+        (if-let [{[entity] :tx-data} ctx]
           (if-let [url (get req :resource-url)]
-            (assoc ctx :response (ring-resp/created url entity))
-            (assoc ctx :response (ring-resp/response entity)))
+            (assoc ctx :response (ring-resp/created url (assoc entity :charge_raw chg)))
+            (assoc ctx :response (ring-resp/response (assoc entity :charge_raw chg))))
           ctx)
         ctx))}))
 
