@@ -37,21 +37,27 @@
    {:name ::create-order
     :enter
     (fn [{{db :db, :as req} :request :as ctx}]
-      (let [get-eid (comp #(update % :orderItem/cid  (fn [cid] (d/entid db [:cuisine/id cid])))
-                          #(update % :orderItem/spec (fn [spec] (d/entid db (keyword "spec.name" spec)))))
+      (let [get-eid (comp #(update % :OrderItem/productID
+                                   (fn [pid] (d/entid db [:MenuItem/productID pid])))
+                          #(update-in % [:OrderItem/offers :Offer/name]
+                                      (fn [spec] (keyword "spec.name" spec))))
             transit (walk/postwalk-replace
-                     {"cid" :orderItem/cid
-                      "spec" :orderItem/spec
-                      "qty"  :orderItem/qty}
+                     {:Order/CartItems :Order/OrderedItems
+                      "productID" :OrderItem/productID
+                      "qty"  :OrderItem/orderQuantity
+                      "offers" :OrderItem/offers
+                      "price" :Offer/price
+                      "name" :Offer/name}
                      (:transit-params req))
             dbid (d/tempid :db.part/user)
             slug    (str (d/squuid)) ; just for demo
             url     (route/url-for :view-order :params {:order-id slug})
             datoms  (-> transit
                         (assoc  :db/id dbid
-                                :order/tokenSlug slug
-                                :order/client_ip (:remote-addr req))
-                        (update :order/items (partial mapv get-eid))
+                                :Order/orderNumber slug
+                                :Order/orderStatus :OrderStatus/OrderProcessing
+                                :Order/client_ip (:remote-addr req))
+                        (update :Order/OrderedItems (partial mapv get-eid))
                         vector)]
         (-> ctx
             (assoc :tx-data datoms)
@@ -63,17 +69,18 @@
    {:name ::make-charge
     :enter
     (fn [ctx]
-      (if-let [{{chn :payment/channel, :as tx} :tx-data} ctx]
+      (if-let [{{chn :charge/paymentMethod, :as tx} :tx-data} ctx]
         (let [opts {:insecure? true
                     :basic-auth [api-key ""]
                     :header {"Authorization" (str "Bearer " api-key)}
                     :form-params
                     {:order_no
-                     (s/replace (get-in tx [0 :order/tokenSlug]) #"-" {"-" ""})
+                     (s/replace (get-in tx [0 :Order/orderNumber]) #"-" {"-" ""})
                      (keyword "app[id]") app-id
-                     :channel   "alipay"
+                     :channel   "alipay_wap"
+                     :extra     {:success_url "https://miaomfood.com/"}
                      :amount    12156
-                     :client_ip (get-in tx [0 :order/client_ip])
+                     :client_ip "127.0.0.1"
                      :currency  "cny"
                      :subject   "买买买"
                      :body      "好好好"}}

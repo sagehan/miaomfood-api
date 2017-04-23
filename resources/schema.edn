@@ -401,14 +401,6 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :Order/cashToPay?
-     :db/valueType :db.type/boolean
-     :db/cardinality :db.cardinality/one
-     :db/fulltext true
-     :db/doc "现金到付时，订单中添加该属性"
-     :db.install/_attribute :db.part/db}
-
-    {:db/id #db/id[:db.part/db]
      :db/ident :Order/amount
      :db/valueType :db.type/float
      :db/cardinality :db.cardinality/one
@@ -464,7 +456,7 @@
      :db/ident :Order/customer
      :db/valueType :db.type/ref
      :db/isComponent true
-     :db/cardinality :db.cardinality/many
+     :db/cardinality :db.cardinality/one
      :db/doc "订单客户信息"
      :db.install/_attribute :db.part/db}
 
@@ -507,21 +499,22 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :OrderItem/cid
+     :db/ident :OrderItem/productID
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品ID"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :OrderItem/spec
+     :db/isComponent true
      :db/valueType :db.type/ref
+     :db/ident :OrderItem/offers
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品规格"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :OrderItem/qty
+     :db/ident :OrderItem/orderQuantity
      :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "订单条目对应的菜品订购数量"
@@ -601,7 +594,7 @@
      :db/doc "促销码失效日期，单位Unix时间戳"
      :db.install/_attribute :db.part/db}
 
-;;; Order charge component
+;;; Order charge componend
     {:db/id #db/id[:db.part/db]
      :db/ident :Order/charge
      :db/valueType :db.type/ref
@@ -625,7 +618,7 @@
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
-     :db/ident :payment/channel
+     :db/ident :charge/paymentMethod
      :db/valueType :db.type/ref
      :db/cardinality :db.cardinality/one
      :db/doc "支付渠道，枚举值"

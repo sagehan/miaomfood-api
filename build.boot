@@ -24,7 +24,6 @@
     :exclusions [com.datomic/datomic-free]]
    [org.postgresql/postgresql "9.3-1102-jdbc41"]
 
-   [org.clojure/algo.generic  "0.1.2"]
    ;; Logging
    [ch.qos.logback/logback-classic "1.1.2"
     :exclusions [org.slf4j/slf4j-api]]

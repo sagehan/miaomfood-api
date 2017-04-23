@@ -5,8 +5,7 @@
   "Merely some query interfaces for datomic backend"
   (:require
    [datomic.api :as d]
-   [clojure.walk :refer [prewalk]]
-   [clojure.algo.generic.functor :refer [fmap]]))
+   [clojure.walk :refer [prewalk]]))
 
 (def dissoc-dbid #(if (map? %) (dissoc % :db/id) %))
 
