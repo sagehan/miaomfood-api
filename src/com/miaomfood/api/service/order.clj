@@ -16,8 +16,8 @@
    [clojure.string :as str]))
 
 (defonce open-id (get env :open-id "gualala"))
-(defonce app-id (get env :app-id ""))
-(defonce api-key (get env :api-key ""))
+(defonce app-id (get env :app-id "app_9SSW9Ojff1yDaXD8"))
+(defonce api-key (get env :api-key "sk_test_1yz5uT10qvDGuXHa1Ky50Gi5"))
 (defonce charge-api "https://api.pingxx.com/v1/charges")
 
 (def view-order
@@ -33,6 +33,18 @@
               (assoc ctx :response (ring-resp/created url entity)))
             (assoc ctx :response (ring-resp/response entity)))
           ctx)
+        ctx))}))
+
+(def review-order
+  (interceptor
+   {:name ::review-order
+    :enter
+    (fn [{{db :db conn :conn :as req} :request :as ctx}]
+      (if-let [oid (get-in req [:path-params :order-id])]
+        (if-let [eid (d/entid db [:Order/orderNumber oid])]
+          (let [order (d/pull db '[*] eid)]
+            (assoc ctx :response (ring-resp/response order)))
+          (assoc ctx :response (ring-resp/not-found "此订单不存在！")))
         ctx))}))
 
 (def create-order
@@ -52,7 +64,7 @@
                       "price" :Offer/price
                       "name" :Offer/name}
                      (:transit-params req))
-            dbid (d/tempid :db.part/user)
+            dbid    (d/tempid :db.part/user)
             slug    (s/replace (str (d/squuid)) #"-" {"-" ""}) ; just for demo
             url     (route/url-for :view-order :params {:order-id slug})
             datoms  (-> transit
@@ -83,7 +95,7 @@
     (fn [ctx]
       (if-let [{ [{{chn :charge/paymentMethod} :Order/charge :as tx}] :tx-data} ctx]
         (if-not (= "Cash" (name chn))
-          (let [cb_url      "https://miaomfood.com/"
+          (let [cb_url      "https://miaomfood.com/orders/"
                 assoc-extra #(case (name chn)
                                "wx_pub" (assoc-in % [:form-params :extra :open_id] open-id)
                                "alipay_wap" (assoc-in % [:form-params :extra :success_url] cb_url))
@@ -105,3 +117,25 @@
               (assoc ctx :tx-charge (json/read-str body))))
           ctx)
         ctx))}))
+
+(def charge-order
+  (interceptor
+   {:name ::charge-order
+    :enter
+    (fn [{ {db :db, :as req} :request :as ctx }]
+      (if-let [event (:json-params req)]
+        (if (= "charge.succeeded" (:type event))
+          (let [data (get-in event [:data :object])]
+            (assoc ctx
+                   :tx-data
+                   [{:db/id [:Order/orderNumber (:order_no data)]
+                     :Order/charge
+                     {:db/id [:charge/id (:id data)]
+                      :charge/transaction_no (:transaction_no data)
+                      :charge/timePaid (:time_paid data)
+                      :charge/amount (:amount data)}}]
+                   :response
+                   (ring-resp/response "OK!")))
+          (assoc ctx :response (ring-resp/status (ring-resp/response "Wrong Type") 500)))
+        ctx
+        ))}))

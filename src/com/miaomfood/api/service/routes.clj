@@ -14,7 +14,8 @@
    [io.pedestal.http.content-negotiation :as conneg]
    [com.miaomfood.api.service.qpi :as q]
    [com.miaomfood.api.service.db :refer [datomic-intc]]
-   [com.miaomfood.api.service.order :refer [create-order make-charge view-order]])
+   [com.miaomfood.api.service.order :refer
+    [create-order make-charge view-order charge-order review-order]])
   (:import
    [java.io ByteArrayInputStream ByteArrayOutputStream]))
 
@@ -91,6 +92,10 @@
       :route-name :get-cuisines]
      ["/api/v1/orders"   :post (conj common-intc view-order datomic-intc create-order make-charge)
       :route-name :place-order]
-     ["/api/v1/orders/:order-id" :get (conj common-intc datomic-intc view-order)
-      :route-name :view-order]
+     ["/api/v1/orders/:order-id" :get (conj common-intc datomic-intc review-order)
+      :route-name :review-order]
+     ["/api/v1/webhooks/charge" :post (conj common-intc datomic-intc charge-order)
+      :route-name :charge-order]
+     ["/orders" :get (conj common-intc datomic-intc review-order)
+      :route-name :review-orders]
      }))

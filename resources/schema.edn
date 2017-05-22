@@ -402,7 +402,7 @@
 
     {:db/id #db/id[:db.part/db]
      :db/ident :Order/amount
-     :db/valueType :db.type/float
+     :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/doc "订单总额"
      :db.install/_attribute :db.part/db}
@@ -607,6 +607,7 @@
      :db/ident :charge/id
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
+     :db/unique :db.unique/identity
      :db/doc "收费凭证号"
      :db.install/_attribute :db.part/db}
 
