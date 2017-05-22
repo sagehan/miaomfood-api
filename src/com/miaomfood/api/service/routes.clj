@@ -93,9 +93,6 @@
      ["/api/v1/orders"   :post (conj common-intc view-order datomic-intc create-order make-charge)
       :route-name :place-order]
      ["/api/v1/orders/:order-id" :get (conj common-intc datomic-intc review-order)
-      :route-name :review-order]
+      :route-name :view-order]
      ["/api/v1/webhooks/charge" :post (conj common-intc datomic-intc charge-order)
-      :route-name :charge-order]
-     ["/orders" :get (conj common-intc datomic-intc review-order)
-      :route-name :review-orders]
-     }))
+      :route-name :charge-order]}))

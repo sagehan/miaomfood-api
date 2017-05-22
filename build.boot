@@ -12,8 +12,11 @@
    [ns-tracker "0.3.1"]
    [environ "1.1.0"]
 
-   ;; HTTP client to request 3rd part payment RESTful APIs
+   ;; HTTP client to request 3rd part RESTful APIs
    [http-kit "2.2.0"]
+
+   ;; Authentication
+   [buddy/buddy-auth "1.4.1" :exclusions [cheshire]]
 
    ;; Datomic, if your heart desires it
    [com.datomic/datomic-pro "0.9.5561"

@@ -16,8 +16,8 @@
    [clojure.string :as str]))
 
 (defonce open-id (get env :open-id "gualala"))
-(defonce app-id (get env :app-id "app_9SSW9Ojff1yDaXD8"))
-(defonce api-key (get env :api-key "sk_test_1yz5uT10qvDGuXHa1Ky50Gi5"))
+(defonce app-id (get env :app-id ""))
+(defonce api-key (get env :api-key ""))
 (defonce charge-api "https://api.pingxx.com/v1/charges")
 
 (def view-order
