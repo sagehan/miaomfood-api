@@ -24,32 +24,30 @@
 (defn restaurant-entities
   [conn]
   (let [db (d/db conn)]
-    (->> (d/pull
-          db
-          '[*]
-          (first (d/q '[:find [?e ...] :where [?e :Restaurant/name _]] db)))
-         (prewalk
-          (comp dissoc-dbid
-                stringify-enum
-                render-entity
-                (partial expand-enum-dbid db))))))
+    (prewalk
+     (comp dissoc-dbid
+           stringify-enum
+           render-entity
+           (partial expand-enum-dbid db))
+     (d/pull db '[*]
+      (first (d/q '[:find [?e ...] :where [?e :Restaurant/name _]] db))))))
 
 (defn cuisines-entities
   [conn]
   (let [db (d/db conn)]
-    (->> (d/pull-many
-          db
-          '[:MenuItem/productID
-            :MenuItem/name
-            :MenuItem/image
-            {:MenuItem/offers
-             [{:Offer/name [:db/ident]}
-              :Offer/price
-              {:Offer/priceCurrency [:db/ident]}
-              :Offer/inventoryLevel
-              :spec/duplexable]}]
-          (d/q '[:find [?e ...] :in $ :where [?e :MenuItem/productID _]] db))
-         (prewalk stringify-enum))))
+    (prewalk
+     stringify-enum
+     (d/pull-many db
+      '[:MenuItem/productID
+        :MenuItem/name
+        :MenuItem/image
+        {:MenuItem/offers
+         [{:Offer/name [:db/ident]}
+          :Offer/price
+          {:Offer/priceCurrency [:db/ident]}
+          :Offer/inventoryLevel
+          :spec/duplexable]}]
+      (d/q '[:find [?e ...] :in $ :where [?e :MenuItem/productID _]] db)))))
 
 (defn user-entity
   [conn uid]
@@ -57,5 +55,32 @@
 
 (defn order-entity
   [db oid]
-  (d/pull db '[*] [:order/tokenSlug oid]))
+  (prewalk
+   (comp stringify-enum
+         render-entity
+         (partial expand-enum-dbid db))
+   (d/pull db
+    '[:Order/orderNumber
+      :Order/orderStatus
+      :Order/comment
+      :Order/isGift
+      :Order/orderDate
+      :Order/confirmedTime
+      :Order/deliveredTime
+      :Order/completeTime
+      {:Order/OrderedItems
+       [:OrderItem/orderQuantity
+        {:OrderItem/productID [:MenuItem/name]}
+        {:OrderItem/offers [:Offer/name :Offer/price]}]}
+      {:Order/customer
+       [:Customer/name
+        :Customer/telephone
+        :Customer/address]}
+      {:Order/charge
+       [:charge/id
+        :charge/created
+        :charge/timeExpire
+        :charge/amount
+        :charge/paymentMethod]}]
+    [:Order/orderNumber oid])))
 

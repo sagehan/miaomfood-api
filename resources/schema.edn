@@ -409,10 +409,31 @@
 
     {:db/id #db/id[:db.part/db]
      :db/ident :Order/orderDate
-     :db/valueType :db.type/string
+     :db/valueType :db.type/long
      :db/cardinality :db.cardinality/one
      :db/fulltext true
-     :db/doc "订单创建的日期及时间"
+     :db/doc "订单创建的日期及时间，Uninx纪元秒数"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/confirmedTime
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "接单时间，Uninx纪元秒数"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/deliveredTime
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "出餐时间，Uninx纪元秒数"
+     :db.install/_attribute :db.part/db}
+
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/completeTime
+     :db/valueType :db.type/long
+     :db/cardinality :db.cardinality/one
+     :db/doc "签收时间，Uninx纪元秒数"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
@@ -428,6 +449,15 @@
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "发起订单的客户端IPv4 地址"
+     :db.install/_attribute :db.part/db}
+
+;;; delivery info component
+    {:db/id #db/id[:db.part/db]
+     :db/ident :Order/customer
+     :db/valueType :db.type/ref
+     :db/isComponent true
+     :db/cardinality :db.cardinality/one
+     :db/doc "订单客户信息"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]
@@ -449,15 +479,6 @@
      :db/valueType :db.type/string
      :db/cardinality :db.cardinality/one
      :db/doc "收餐客户地址"
-     :db.install/_attribute :db.part/db}
-
-;;; delivery info component
-    {:db/id #db/id[:db.part/db]
-     :db/ident :Order/customer
-     :db/valueType :db.type/ref
-     :db/isComponent true
-     :db/cardinality :db.cardinality/one
-     :db/doc "订单客户信息"
      :db.install/_attribute :db.part/db}
 
     {:db/id #db/id[:db.part/db]

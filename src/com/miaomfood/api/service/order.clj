@@ -42,7 +42,7 @@
     (fn [{{db :db conn :conn :as req} :request :as ctx}]
       (if-let [oid (get-in req [:path-params :order-id])]
         (if-let [eid (d/entid db [:Order/orderNumber oid])]
-          (let [order (d/pull db '[*] eid)]
+          (let [order (q/order-entity db oid)]
             (assoc ctx :response (ring-resp/response order)))
           (assoc ctx :response (ring-resp/not-found "此订单不存在！")))
         ctx))}))
