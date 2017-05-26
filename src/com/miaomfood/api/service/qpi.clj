@@ -62,6 +62,7 @@
    (d/pull db
     '[:Order/orderNumber
       :Order/orderStatus
+      :Order/amount
       :Order/comment
       :Order/isGift
       :Order/orderDate

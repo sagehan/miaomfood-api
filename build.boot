@@ -34,7 +34,7 @@
    [org.slf4j/jcl-over-slf4j "1.7.7"]
    [org.slf4j/log4j-over-slf4j "1.7.7"]])
 
-(def version "0.0.1-SNAPSHOT")
+(def version "0.1.0-SNAPSHOT")
 (task-options! pom {:project 'miaomfood-api
                     :version (str version "-standalone")
                     :description "FIXME: write description"

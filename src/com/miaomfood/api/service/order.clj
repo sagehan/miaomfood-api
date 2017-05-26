@@ -28,7 +28,7 @@
       (if-let [oid (get-in req [:path-params :order-id])]
         (if-let [[entity] (:tx-data ctx)]
           (if-let [url (get req :resource-url)]
-            (if-let [chg (:tx-charge ctx)]
+            (if-let [chg (:tx-charge-raw ctx)]
               (assoc ctx :response (ring-resp/created url (assoc entity :charge_raw chg)))
               (assoc ctx :response (ring-resp/created url entity)))
             (assoc ctx :response (ring-resp/response entity)))
@@ -65,11 +65,18 @@
                       "name" :Offer/name}
                      (:transit-params req))
             dbid    (d/tempid :db.part/user)
-            slug    (s/replace (str (d/squuid)) #"-" {"-" ""}) ; just for demo
+            slug    (str (/ (d/squuid-time-millis (d/squuid)) 1000)) ; just for demo
+            gratuity 3 ; just hardcode gratuity fee here for demo
+            total   (+ (->> (map
+                             #(* (:OrderItem/orderQuantity %) (get-in % [:OrderItem/offers :Offer/price]))
+                             (:Order/OrderedItems transit))
+                            (reduce +))
+                       gratuity)
             url     (route/url-for :view-order :params {:order-id slug})
             datoms  (-> transit
                         (assoc  :db/id dbid
                                 :Order/orderNumber slug
+                                :Order/amount total
                                 :Order/orderStatus :OrderStatus/OrderProcessing
                                 :Order/client_ip (:remote-addr req))
                         (update :Order/OrderedItems (partial mapv get-eid))
@@ -81,11 +88,7 @@
     :leave
     (fn [ctx]
       (if-let [chg (:tx-charge ctx)]
-        (update-in ctx [:tx-data 0 :Order/charge]
-                   assoc
-                   :charge/id (get chg "id")
-                   :charge/created (get chg "created")
-                   :charge/timeExpire (get chg "time_expire"))
+        (update-in ctx [:tx-data 0 :Order/charge] merge chg)
         ctx))}))
 
 (def make-charge
@@ -106,7 +109,7 @@
                           {:order_no  (:Order/orderNumber tx)
                            (keyword "app[id]") app-id
                            :channel   (name chn)
-                           :amount    (or (:Order/amount tx) 11800)
+                           :amount    (:Order/amount tx)
                            :client_ip "127.0.0.1"
                            :currency  "cny"
                            :subject   "买买买"
@@ -114,7 +117,14 @@
                 {:keys [status headers body error] :as resp} @(http/post charge-api opts)]
             (if error
               (println "Failed, exception is " error)
-              (assoc ctx :tx-charge (json/read-str body))))
+              (let [chg-json (json/read-str body)]
+                (assoc ctx
+                       :tx-charge-raw chg-json
+                       :tx-charge
+                       {:charge/id (get chg-json "id")
+                        :charge/amount (get chg-json "amount")
+                        :charge/created (get chg-json "created")
+                        :charge/timeExpire (get chg-json "time_expire")}))))
           ctx)
         ctx))}))
 
@@ -132,8 +142,9 @@
                      :Order/charge
                      {:db/id [:charge/id (:id data)]
                       :charge/transaction_no (:transaction_no data)
+                      :charge/amount (:amount data)
                       :charge/timePaid (:time_paid data)
-                      :charge/amount (:amount data)}}]
+                      :charge/paymentMethod (:channel data)}}]
                    :response
                    (ring-resp/response "OK!")))
           (assoc ctx :response (ring-resp/status (ring-resp/response "Wrong Type") 500)))
