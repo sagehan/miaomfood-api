@@ -109,7 +109,7 @@
                           {:order_no  (:Order/orderNumber tx)
                            (keyword "app[id]") app-id
                            :channel   (name chn)
-                           :amount    (:Order/amount tx)
+                           :amount    (* 100 (:Order/amount tx))
                            :client_ip "127.0.0.1"
                            :currency  "cny"
                            :subject   "买买买"
